@@ -1,0 +1,3 @@
+const fs=require('fs'); const path=require('path');
+function walk(dir){ if(!fs.existsSync(dir)) return; const entries=fs.readdirSync(dir,{withFileTypes:true}); for(const e of entries){ const p=path.join(dir,e.name); if(e.isDirectory()) walk(p); else { try{ const b=fs.readFileSync(p); if(b.includes(0)) console.log('NULL BYTE:', p); const first2=b.slice(0,2); if(first2[0]==0xff && first2[1]==0xfe) console.log('UTF16 LE BOM:', p); if(first2[0]==0xfe && first2[1]==0xff) console.log('UTF16 BE BOM:', p); } catch(e){ console.error('ERR reading',p,e.message) } } } }
+['app','components','provider','lib','app/(main)'].forEach(dir=>walk(dir));
